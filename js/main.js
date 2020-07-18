@@ -51,27 +51,37 @@ function displayChoices(roundNo) {
     rock.classList = "choices";
     rock.id = "rock"; 
     rock.src = "images/rock.png";
-    rock.addEventListener("click", () => game("rock"));
+    rock.addEventListener("click", () => startGame(roundNo, "rock"));
 
     const paper = document.createElement("img");
     paper.classList = "choices";
     paper.id = "paper"; 
     paper.src = "images/paper.png";
-    paper.addEventListener("click", () => game("paper"));
+    paper.addEventListener("click", () => startGame(roundNo, "paper"));
 
     const scissor = document.createElement("img");
     scissor.classList = "choices";
     scissor.id = "scissor"; 
     scissor.src = "images/scissor.png";
-    scissor.addEventListener("click", () => game("scissor"));
+    scissor.addEventListener("click", () => startGame(roundNo, "scissor"));
 
     const choices = document.createElement("div");
-    choices.classList = `Round ${roundNo}`;
+    choices.classList = `Round${roundNo}`;
     choices.appendChild(rock);
     choices.appendChild(paper);
     choices.appendChild(scissor);
     
     container.appendChild(choices);
+}
+
+function startGame(roundNo, choice){
+    const roundsList = document.querySelectorAll(`.Round${roundNo}`);
+    const currentRoundReference = roundsList[roundsList.length - 1];
+    const imageList = currentRoundReference.querySelectorAll("img");
+    currentRoundReference.removeChild(imageList[0]);
+    currentRoundReference.removeChild(imageList[1]);
+    currentRoundReference.removeChild(imageList[2]);
+    game(choice)
 }
 
 function startRound(roundNo) {
