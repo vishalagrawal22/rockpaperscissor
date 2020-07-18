@@ -2,7 +2,8 @@ let outcomes = ["rock", "paper", "scissor"];
 let wins = 0;
 let draws = 0;
 let loses = 0;
-let Selected;
+let currentRound = 1;
+let NOOFROUNDS;
 const container = document.querySelector("#container");
 
 function computerPlay() {
@@ -34,30 +35,15 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
-function game(noOfRounds) {
-    for(let roundNo = 1; roundNo <= noOfRounds; roundNo++){
-        displayChoices(roundNo);
-        const playerSelection = Selected;
-        const computerSelection = computerPlay();
-
-        if ((playerSelection === undefined) || (outcomes.find(outcome => outcome === playerSelection.toLowerCase()) === undefined)) {
-            console.warn("Please enter Rock, Paper or Scissor only");
-            console.info("Reload to Retry");
-        } else {
-            console.log(playRound(playerSelection.toLowerCase(), computerSelection));
-        }
-    }
-}
-
 const roundsButtonList = document.querySelectorAll(".rounds");
 roundsButtonList.forEach((button) => button.addEventListener('click',(event) => {
+    console.log("Starting a new game");
     let noOfRounds = Number(event.target.value);
     const start = document.createElement('h3');
     start.textContent = `Starting a game of ${noOfRounds} rounds.`;
     container.appendChild(start);
-    game(noOfRounds);
-    console.log(`Wins: ${wins}\nLoses: ${loses}\nDraws: ${draws}`);
-    wins = loses = draws = 0;
+    NOOFROUNDS = noOfRounds;
+    startRound(1);
 }));
 
 function displayChoices(roundNo) {
@@ -65,19 +51,19 @@ function displayChoices(roundNo) {
     rock.classList = "choices";
     rock.id = "rock"; 
     rock.src = "images/rock.png";
-    rock.addEventListener("click", () => Selected = "rock");
+    rock.addEventListener("click", () => game("rock"));
 
     const paper = document.createElement("img");
     paper.classList = "choices";
     paper.id = "paper"; 
     paper.src = "images/paper.png";
-    paper.addEventListener("click", () => Selected = "paper");
+    paper.addEventListener("click", () => game("paper"));
 
     const scissor = document.createElement("img");
     scissor.classList = "choices";
     scissor.id = "scissor"; 
     scissor.src = "images/scissor.png";
-    scissor.addEventListener("click", () => Selected = "scissor");
+    scissor.addEventListener("click", () => game("scissor"));
 
     const choices = document.createElement("div");
     choices.classList = `Round ${roundNo}`;
@@ -86,4 +72,36 @@ function displayChoices(roundNo) {
     choices.appendChild(scissor);
     
     container.appendChild(choices);
+}
+
+function startRound(roundNo) {
+    if(roundNo > NOOFROUNDS)
+    {
+        console.log("Game Ended");
+        displayResult();
+    }
+    else {
+        displayChoices(roundNo);
+    }
+}
+
+function game(playerSelection) {
+    const computerSelection = computerPlay();
+
+    if ((playerSelection === undefined) || (outcomes.find(outcome => outcome === playerSelection.toLowerCase()) === undefined)) {
+        console.warn("Please enter Rock, Paper or Scissor only");
+        console.info("Reload to Retry");
+    } else {
+        console.log(`You choosed ${playerSelection}`);
+        console.log(`Computer choosed ${computerSelection}`);
+        console.log(playRound(playerSelection.toLowerCase(), computerSelection));
+    }
+    currentRound++;
+    startRound(currentRound);
+}
+
+function displayResult() { 
+    console.log(`Wins: ${wins}\nLoses: ${loses}\nDraws: ${draws}`);
+    wins = loses = draws = 0;
+    currentRound = 1;
 }
