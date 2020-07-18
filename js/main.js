@@ -4,7 +4,6 @@ let draws = 0;
 let loses = 0;
 let currentRound = 1;
 let NOOFROUNDS;
-const container = document.querySelector("#container");
 
 function computerPlay() {
     let randomNumber = Math.floor(Math.random() * 3);
@@ -34,17 +33,6 @@ function playRound(playerSelection, computerSelection) {
         }
     }
 }
-
-const roundsButtonList = document.querySelectorAll(".rounds");
-roundsButtonList.forEach((button) => button.addEventListener('click',(event) => {
-    console.log("Starting a new game");
-    let noOfRounds = Number(event.target.value);
-    const start = document.createElement('h3');
-    start.textContent = `Starting a game of ${noOfRounds} rounds.`;
-    container.appendChild(start);
-    NOOFROUNDS = noOfRounds;
-    startRound(1);
-}));
 
 function displayChoices(roundNo) {
     const rock = document.createElement("img");
@@ -88,6 +76,7 @@ function startRound(roundNo) {
     if(roundNo > NOOFROUNDS)
     {
         console.log("Game Ended");
+        setTotalRounds();
         displayResult();
     }
     else {
@@ -97,15 +86,9 @@ function startRound(roundNo) {
 
 function game(playerSelection) {
     const computerSelection = computerPlay();
-
-    if ((playerSelection === undefined) || (outcomes.find(outcome => outcome === playerSelection.toLowerCase()) === undefined)) {
-        console.warn("Please enter Rock, Paper or Scissor only");
-        console.info("Reload to Retry");
-    } else {
-        console.log(`You choosed ${playerSelection}`);
-        console.log(`Computer choosed ${computerSelection}`);
-        console.log(playRound(playerSelection.toLowerCase(), computerSelection));
-    }
+    console.log(`You choosed ${playerSelection}`);
+    console.log(`Computer choosed ${computerSelection}`);
+    console.log(playRound(playerSelection, computerSelection));
     currentRound++;
     startRound(currentRound);
 }
@@ -114,4 +97,51 @@ function displayResult() {
     console.log(`Wins: ${wins}\nLoses: ${loses}\nDraws: ${draws}`);
     wins = loses = draws = 0;
     currentRound = 1;
+    main();
 }
+
+function main() {
+    const divisionList = document.querySelectorAll(".input");
+    const division = divisionList[divisionList.length - 1];
+    const roundsButtonList = division.querySelectorAll("input.rounds");
+    roundsButtonList.forEach((button) => button.addEventListener('click', onClickforRoundsButton));
+}
+
+function onClickforRoundsButton (event) {
+    console.log("Starting a new game");
+    const divisionList = document.querySelectorAll(".input");
+    const division = divisionList[divisionList.length - 1];
+    const roundsButtonList = division.querySelectorAll("input.rounds");
+    roundsButtonList.forEach((button) => button.removeEventListener('click', onClickforRoundsButton));
+    let noOfRounds = Number(event.target.value);
+    const selectedButton = event.target;
+    selectedButton.style.backgroundColor = "#0000ff";
+    const start = document.createElement('h3');
+    start.textContent = `Starting a game of ${noOfRounds} rounds.`;
+    container.appendChild(start);
+    NOOFROUNDS = noOfRounds;
+    startRound(1);
+}
+
+function setTotalRounds() {
+    const container = document.querySelector("#container");
+    const division = document.createElement('div');
+    division.classList = "input";
+    const header = document.createElement('h3');
+    header.classList = "inline";
+    header.textContent = "How many rounds would you like to play";
+    division.appendChild(header);
+
+    for (let i = 1; i <= 5; i += 2) {
+        const button = document.createElement('input');
+        button.type = "button";
+        button.classList = "rounds";
+        button.value = `${i}`;
+        division.appendChild(button);
+    }
+    container.appendChild(division);
+}
+
+// code below runs just once
+setTotalRounds();
+main();
