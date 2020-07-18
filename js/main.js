@@ -13,28 +13,65 @@ function computerPlay() {
 function playRound(playerSelection, computerSelection) {
 	if (playerSelection === computerSelection) {
         draws++;
+        const header = document.createElement('h2');
+        header.textContent = `Round Result : TIE!`;
+        container.appendChild(header);
         return `It is a tie, both computer and you choosed ${computerSelection}!`;
     }
     else {
         let notChoosen = outcomes.find(outcome => (outcome !== playerSelection && outcome !== computerSelection));
         let choices = { [playerSelection]: "You", [computerSelection]: "Computer" };
 
-        if(notChoosen === "rock") {
-            (choices['scissor'] === "You") ? wins++ : loses++;
+        if (notChoosen === "rock") {
+            if (choices['scissor'] === "You") {
+                const header = document.createElement('h2');
+                header.textContent = `Round Result : You Won!`;
+                container.appendChild(header);
+                wins++; 
+            } else {
+                const header = document.createElement('h2');
+                header.textContent = `Round Result : You Lose!`;
+                container.appendChild(header);
+                loses++;
+            } 
             return `${choices['scissor']} Won, ${choices['paper']} Lose! Scissor beats Paper`;
         }
-        else if(notChoosen === "paper") {
-            (choices['rock'] === "You") ? wins++ : loses++;
+        else if (notChoosen === "paper") {
+            if (choices['rock'] === "You") {
+                const header = document.createElement('h2');
+                header.textContent = `Round Result : You Won!`;
+                container.appendChild(header);
+                wins++; 
+            } else {
+                const header = document.createElement('h2');
+                header.textContent = `Round Result : You Lose!`;
+                container.appendChild(header);
+                loses++;
+            } 
             return `${choices['rock']} Won, ${choices['scissor']} Lose! Rock beats Scissor`;
         }
-        else if(notChoosen === "scissor"){
-            (choices['paper'] === "You") ? wins++ : loses++;
+        else if (notChoosen === "scissor"){
+            if (choices['paper'] === "You") {
+                const header = document.createElement('h2');
+                header.textContent = `Round Result : You Won!`;
+                container.appendChild(header);
+                wins++; 
+            } else {
+                const header = document.createElement('h2');
+                header.textContent = `Round Result : You Lose!`;
+                container.appendChild(header);
+                loses++;
+            } 
             return `${choices['paper']} Won, ${choices['rock']} Lose! Paper beats Rock`;
         }
     }
 }
 
 function displayChoices(roundNo) {
+    const header = document.createElement('h3');
+    header.classList = "inline";
+    header.textContent = `Pick your choice : `;
+    
     const rock = document.createElement("img");
     rock.classList = "choices";
     rock.id = "rock"; 
@@ -55,6 +92,8 @@ function displayChoices(roundNo) {
 
     const choices = document.createElement("div");
     choices.classList = `Round${roundNo}`;
+    choices.classList += " choosen";
+    choices.appendChild(header);
     choices.appendChild(rock);
     choices.appendChild(paper);
     choices.appendChild(scissor);
@@ -65,10 +104,13 @@ function displayChoices(roundNo) {
 function startGame(roundNo, choice){
     const roundsList = document.querySelectorAll(`.Round${roundNo}`);
     const currentRoundReference = roundsList[roundsList.length - 1];
-    const imageList = currentRoundReference.querySelectorAll("img");
-    currentRoundReference.removeChild(imageList[0]);
-    currentRoundReference.removeChild(imageList[1]);
-    currentRoundReference.removeChild(imageList[2]);
+    container.removeChild(currentRoundReference);
+    //const header = currentRoundReference.querySelector("h3");
+    //currentRoundReference.removeChild(header);
+    //const imageList = currentRoundReference.querySelectorAll("img");
+    //currentRoundReference.removeChild(imageList[0]);
+    //currentRoundReference.removeChild(imageList[1]);
+    //currentRoundReference.removeChild(imageList[2]);
     game(choice)
 }
 
@@ -76,16 +118,22 @@ function startRound(roundNo) {
     if(roundNo > NOOFROUNDS)
     {
         console.log("Game Ended");
-        setTotalRounds();
         displayResult();
+        setTotalRounds();
+        main();
     }
     else {
+        const header = document.createElement('h2');
+        header.textContent = `Round ${roundNo} :`;
+        container.appendChild(header);
         displayChoices(roundNo);
     }
 }
 
 function game(playerSelection) {
     const computerSelection = computerPlay();
+    choosenChoice("You", playerSelection);
+    choosenChoice("Computer", computerSelection);
     console.log(`You choosed ${playerSelection}`);
     console.log(`Computer choosed ${computerSelection}`);
     console.log(playRound(playerSelection, computerSelection));
@@ -93,11 +141,53 @@ function game(playerSelection) {
     startRound(currentRound);
 }
 
+function choosenChoice(user, choice) { 
+    const division = document.createElement('div');
+    division.classList = "choosen";
+
+    const header = document.createElement('h3');
+    header.classList = "inline";
+    header.textContent = `${user} choose : `;
+
+    const image = document.createElement('img');
+    image.classList = "choices";
+    image.id = `${choice}`; 
+    image.src = `images/${choice}.png`;
+
+    division.appendChild(header);
+    division.appendChild(image);
+
+    container.appendChild(division);
+}
+
 function displayResult() { 
+    const result = document.createElement('div');
+    const winsheader = document.createElement('h3');
+    const loseheader = document.createElement('h3');
+    const drawheader = document.createElement('h3');
+    const header = document.createElement('h2');
+    const line = document.createElement('hr');
+    const restartMessage = document.createElement('h3');
+
+    header.textContent = `Game Result :`;
+    winsheader.textContent = `Wins: ${wins}`;
+    loseheader.textContent = `Loses: ${loses}`;
+    drawheader.textContent = `Draws: ${draws}`;
+    restartMessage.textContent = "Wanna give it another shot?";
+
+    result.id = "result";
+    result.appendChild(header);
+    result.appendChild(winsheader);
+    result.appendChild(loseheader);
+    result.appendChild(drawheader);
+
+    container.appendChild(result);
+    container.appendChild(line);
+    container.appendChild(restartMessage);
+    
     console.log(`Wins: ${wins}\nLoses: ${loses}\nDraws: ${draws}`);
     wins = loses = draws = 0;
     currentRound = 1;
-    main();
 }
 
 function main() {
