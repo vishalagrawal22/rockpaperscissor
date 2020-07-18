@@ -1,3 +1,17 @@
-body {
-    background-color: #000000;
+.inline {
+    display: inline;
+}
+
+.choices {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+}
+
+div.choosen {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    height: 50px;
 }
